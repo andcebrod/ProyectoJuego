@@ -1,38 +1,25 @@
 package es.studium.Juego;
 
+import java.awt.Choice;
 import java.awt.GridLayout;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.TextEvent;
-import java.awt.event.TextListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-public class Seleccion1 extends JFrame implements WindowListener, ActionListener, TextListener
+
+public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 {
 	
 	private static final long serialVersionUID = 1L;
 	JLabel lblSeleccionar = new JLabel("Selecciona Pokemon: ");
 	JLabel lblBUscar = new JLabel("Buscar:");
-	
+	BaseDatos bd = new BaseDatos();
 	JTextField txtBuscar = new JTextField (10);
-	List listaPkm = new List (4,true);
-	
-	String Pkm1 = "Pepito";
-	String Pkm2 = "Pepito";
-	String Pkm3 = "Pepito";
-	String Pkm4 = "Pepito";
-	String Pkm5 = "Pepito";
-	String Pkm6 = "Pepito";
-	String Pkm7 = "Pepito";
+	Choice Pokemons = new Choice ();
 	
 	JButton btnAceptar = new JButton ("Aceptar");
 	
@@ -49,14 +36,18 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 		this.setSize(300,250);
 		this.setLayout(new GridLayout(4,1));
 		
-		listaPkm.add(Pkm1);
-		listaPkm.add(Pkm2);
-		listaPkm.add(Pkm3);
-		listaPkm.add(Pkm4);
-		listaPkm.add(Pkm5);
-		listaPkm.add(Pkm6);
-		listaPkm.add(Pkm7);
-		
+		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons", bd.conectar("juegoPokemon","root", "Studium2018;"));
+		try {
+			while(rs.next())
+			{
+				String pokemon=Integer.toString(rs.getInt("idPokemon"));
+				pokemon = pokemon+".-"+rs.getString("nombrePokemon");
+				Pokemons.add(pokemon);
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+		}
+		bd.desconectar( bd.conectar("juegoPokemon","root", "Studium2018;"));
 		
 		pnluno.add(lblSeleccionar);
 		this.add(pnluno);
@@ -65,7 +56,7 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 		pnldos.add(txtBuscar);
 		this.add(pnldos);
 		
-		pnltres.add(listaPkm);
+		pnltres.add(Pokemons);
 		this.add(pnltres);
 		
 		pnlcuatro.add(btnAceptar);
@@ -78,15 +69,9 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 	}
 
 	@Override
-	public void textValueChanged(TextEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if(btnAceptar.equals(ae.getSource())) {
-			new Seleccion2();
+			
 			this.setVisible(false);
 		}
 		

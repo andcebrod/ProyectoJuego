@@ -1,5 +1,6 @@
 package es.studium.Juego;
 
+import java.awt.Choice;
 import java.awt.GridLayout;
 import java.awt.List;
 import java.awt.event.ActionEvent;
@@ -8,22 +9,18 @@ import java.awt.event.TextEvent;
 import java.awt.event.TextListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-public class Seleccion2 extends JFrame implements WindowListener, ActionListener, TextListener{
-
+public class Seleccion2 extends JFrame implements WindowListener, ActionListener, TextListener
+{
+	
 	private static final long serialVersionUID = 1L;
 	JLabel lblSeleccionar = new JLabel("Selecciona Pokemon: ");
 	JLabel lblBUscar = new JLabel("Buscar:");
 	
 	JTextField txtBuscar = new JTextField (10);
-	List listaPkm = new List (4,true);
+	Choice Pokemons = new Choice ();
 	
 	JButton btnAceptar = new JButton ("Aceptar");
 	
@@ -32,28 +29,16 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 	JPanel pnltres = new JPanel();
 	JPanel pnlcuatro = new JPanel();
 	
-	String Pkm1 = "Pepito";
-	String Pkm2 = "Pepito";
-	String Pkm3 = "Pepito";
-	String Pkm4 = "Pepito";
-	String Pkm5 = "Pepito";
-	String Pkm6 = "Pepito";
-	String Pkm7 = "Pepito";
 	
-	public Seleccion2() 
+	public Seleccion2(String jugador2) 
 	{
-		this.setTitle("Jugador 2");
+		
+		this.setTitle(jugador2);
 		this.setLocationRelativeTo(null);
 		this.setSize(300,250);
 		this.setLayout(new GridLayout(4,1));
 		
-		listaPkm.add(Pkm1);
-		listaPkm.add(Pkm2);
-		listaPkm.add(Pkm3);
-		listaPkm.add(Pkm4);
-		listaPkm.add(Pkm5);
-		listaPkm.add(Pkm6);
-		listaPkm.add(Pkm7);
+		
 		
 		pnluno.add(lblSeleccionar);
 		this.add(pnluno);
@@ -62,7 +47,7 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 		pnldos.add(txtBuscar);
 		this.add(pnldos);
 		
-		pnltres.add(listaPkm);
+		pnltres.add(Pokemons);
 		this.add(pnltres);
 		
 		pnlcuatro.add(btnAceptar);
@@ -73,6 +58,7 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 		this.setVisible(true);
 		addWindowListener(this);
 	}
+
 	@Override
 	public void textValueChanged(TextEvent arg0) {
 		// TODO Auto-generated method stub
@@ -82,7 +68,7 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		if(btnAceptar.equals(ae.getSource())) {
-			new Partida();
+			
 			this.setVisible(false);
 		}
 		
@@ -131,3 +117,4 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 	}
 
 }
+
