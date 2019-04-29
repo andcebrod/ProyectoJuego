@@ -22,6 +22,7 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 	Choice Pokemons = new Choice ();
 	
 	JButton btnAceptar = new JButton ("Aceptar");
+	JButton btnEstadisticas = new JButton("Estadísticas");
 	
 	JPanel pnluno = new JPanel();
 	JPanel pnldos = new JPanel();
@@ -74,8 +75,12 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 			
 			this.setVisible(false);
 		}
+		if(btnEstadisticas.equals(ae.getSource())) {
+			
+		}
 		
 	}
+	
 
 	@Override
 	public void windowActivated(WindowEvent arg0) {
