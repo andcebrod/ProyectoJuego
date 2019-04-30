@@ -29,14 +29,20 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 	JPanel pnltres = new JPanel();
 	JPanel pnlcuatro = new JPanel();
 	
+	String jugador1="";
+	String jugador2="";
 	
-	public Seleccion1() 
+	
+	public Seleccion1(String j1, String j2) 
 	{
-		this.setTitle("Jugador 1");
+		jugador1 = j1;
+		jugador2 = j2;
+		this.setTitle(jugador1+" ¡Elige Pokémon!");
 		this.setLocationRelativeTo(null);
-		this.setSize(300,250);
+		this.setSize(350,250);
 		this.setLayout(new GridLayout(4,1));
 		
+		//Rellenar choice con Pokemons
 		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons", bd.conectar("juegoPokemon","root", "Studium2018;"));
 		try {
 			while(rs.next())
@@ -53,17 +59,14 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 		pnluno.add(lblSeleccionar);
 		this.add(pnluno);
 		
-		pnldos.add(lblBUscar);
-		pnldos.add(txtBuscar);
-		this.add(pnldos);
-		
 		pnltres.add(Pokemons);
 		this.add(pnltres);
 		
 		pnlcuatro.add(btnAceptar);
+		pnlcuatro.add(btnEstadisticas);
 		btnAceptar.addActionListener(this);
+		btnEstadisticas.addActionListener(this);
 		this.add(pnlcuatro);
-		
 		
 		this.setVisible(true);
 		addWindowListener(this);
@@ -71,17 +74,33 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
-		if(btnAceptar.equals(ae.getSource())) {
+		if(btnAceptar.equals(ae.getSource())) 
+		{
+			int idJugador = 0;
+			String[] array= Pokemons.getSelectedItem().toString().split(".-");
+			int idPokemon = Integer.parseInt(array[0]);
+			bd.ejecutarIDA("INSERT INTO jugadores VALUES (null,'"+jugador1+"',"+idPokemon+");", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			JOptionPane.showMessageDialog(null,"Primer Jugador añadido!","Jugador añadido", JOptionPane.INFORMATION_MESSAGE);
+			ResultSet jugadorCreado = bd.ejecutarSelect("SELECT idJugador FROM jugadores ORDER BY idJugador DESC;", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			try {
+				jugadorCreado.next();
+				idJugador = jugadorCreado.getInt("idJugador");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+			}
 			
 			this.setVisible(false);
+			new Seleccion2(jugador2, idJugador);
 		}
 		if(btnEstadisticas.equals(ae.getSource())) {
-			
+			String[] array= Pokemons.getSelectedItem().toString().split(".-");
+			int idPokemon = Integer.parseInt(array[0]);
+			new EstadisticasPokemon(idPokemon);
 		}
 		
 	}
 	
-
 	@Override
 	public void windowActivated(WindowEvent arg0) {
 		// TODO Auto-generated method stub
@@ -96,7 +115,8 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		System.exit(0);
+		this.setVisible(false);
+		new MenuPrincipal();
 		
 	}
 

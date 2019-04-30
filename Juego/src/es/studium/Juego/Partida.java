@@ -78,7 +78,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 
 	JLabel lblRendirse = new JLabel("¿Está seguro de rendirte?");
 	JLabel lblFin = new JLabel("Fin de la Partida, jugador 1 gana");
-	public Partida() 
+	public Partida(int idJ1,int idJ2) 
 	{
 
 		this.setTitle("Batalla");
@@ -169,10 +169,6 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 
 
 	}
-	public static void main(String[] args) {
-		new Partida();
-	}
-
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		//RENDIRSE 

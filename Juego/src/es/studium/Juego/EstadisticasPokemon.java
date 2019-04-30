@@ -27,6 +27,7 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 	JLabel lblDefensaEsp = new JLabel ("Defensa Especial:");
 	JLabel lblTipo1 = new JLabel("Tipo 1:");
 	JLabel lblTipo2 = new JLabel("Tipo 2:");
+	JLabel lblPuntosSalud = new JLabel ("Puntos de Salud:");
 	
 	JTextField txtNombre = new JTextField(10);
 	JTextField txtAtaque = new JTextField(10);
@@ -34,11 +35,12 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 	JTextField txtVelocidad = new JTextField(10);
 	JTextField txtAtaqueEsp = new JTextField(10);
 	JTextField txtDefensaEsp = new JTextField(10);
+	JTextField txtPuntosSalud = new JTextField(10);
 	JTextField txtTipo1 = new JTextField(10);
 	JTextField txtTipo2 = new JTextField(10);
 	
 	JButton btnAceptar = new JButton("Aceptar");
-
+	JPanel pnl = new JPanel();
 	JPanel pnl1 = new JPanel();
 	JPanel pnl2 = new JPanel();
 	JPanel pnl3 = new JPanel();
@@ -54,7 +56,7 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 		this.setTitle("Estadísticas Pokemon");
 		this.setSize(300,600);
 		this.setLocationRelativeTo(null);
-		this.setLayout(new GridLayout(9,1));
+		this.setLayout(new GridLayout(10,1));
 		
 		int idTipo1 = 0;
 		int idTipo2 = 0;
@@ -68,11 +70,19 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 			idTipo2 = rs.getInt("idTipo2FK");
 			
 			txtNombre.setText(rs.getString("nombrePokemon"));
+			txtPuntosSalud.setText(rs.getString("puntosSalud"));
 			txtAtaque.setText(rs.getString("ataque"));
 			txtDefensa.setText(rs.getString("defensa"));
 			txtVelocidad.setText(rs.getString("velocidad"));
 			txtAtaqueEsp.setText(rs.getString("ataqueEspecial"));
 			txtDefensaEsp.setText(rs.getString("defensaEspecial"));
+			txtNombre.setEditable(false);
+			txtPuntosSalud.setEditable(false);
+			txtAtaque.setEditable(false);
+			txtDefensa.setEditable(false);
+			txtVelocidad.setEditable(false);
+			txtAtaqueEsp.setEditable(false);
+			txtDefensaEsp.setEditable(false);
 			
 		} 
 		
@@ -88,14 +98,17 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 			rs3.next();
 			txtTipo1.setText(rs2.getString("nombreTipo"));
 			txtTipo2.setText(rs3.getString("nombreTipo"));
+			txtTipo1.setEditable(false);
+			txtTipo2.setEditable(false);
 			
 		} catch (SQLException sqle)
 		{
 			JOptionPane.showMessageDialog(null,sqle.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 		}
-
-		pnl1.add(lblNombre);
-		pnl1.add(txtNombre);
+		pnl.add(lblNombre);
+		pnl.add(txtNombre);
+		pnl1.add(lblPuntosSalud);
+		pnl1.add(txtPuntosSalud);
 		pnl2.add(lblAtaque);
 		pnl2.add(txtAtaque);
 		pnl3.add(lblDefensa);
@@ -121,6 +134,7 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 		this.add(pnl7);
 		this.add(pnl8);
 		this.add(pnl9);
+		
 		this.addWindowListener(this);
 		btnAceptar.addActionListener(this);
 		this.setVisible(true);

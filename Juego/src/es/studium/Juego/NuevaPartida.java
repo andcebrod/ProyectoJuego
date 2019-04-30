@@ -61,7 +61,7 @@ public class NuevaPartida extends JFrame implements WindowListener, ActionListen
 	public void actionPerformed(ActionEvent ae) {
 		if(btnSiguiente.equals(ae.getSource())) 
 		{
-			new Seleccion1();
+			new Seleccion1(txtJugador1.getText(), txtJugador2.getText());
 			this.setVisible(false);
 		}
 		
