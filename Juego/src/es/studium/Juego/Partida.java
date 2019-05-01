@@ -7,11 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.border.Border;
@@ -23,6 +26,9 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	private static final long serialVersionUID = 1L;
 
 	int turno = 1;
+
+	BaseDatos bd = new BaseDatos();
+	Funciones f = new Funciones();
 
 	JPanel pnluno = new JPanel();
 	JPanel pnldos = new JPanel();
@@ -49,13 +55,13 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	JLabel lblAtaque = new JLabel("");
 	JLabel lblDanio = new JLabel("");
 
-	JLabel lblVida1 = new JLabel("PS: ");
-	JLabel lblVida2 = new JLabel("PS: ");
-	JLabel lblPkm1 = new JLabel("Charizard");
-	JLabel lblPkm2 = new JLabel("Blastoise");
+	JLabel lblVida1 = new JLabel("");
+	JLabel lblVida2 = new JLabel("");
+	JLabel lblPkm1 = new JLabel("");
+	JLabel lblPkm2 = new JLabel("");
 
-	JProgressBar PBvida1 = new JProgressBar(0, 1000);
-	JProgressBar PBvida2 = new JProgressBar(0, 1000);
+	JProgressBar PBvida1;
+	JProgressBar PBvida2;
 
 	JButton btnAtacar = new JButton ("Atacar");
 	JButton btnRendirse = new JButton ("Rendirse");
@@ -63,21 +69,29 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	JButton btnSi = new JButton ("Sí");
 	JButton btnNo = new JButton ("No");
 
-	JButton btnAtaque1J1 = new JButton ("Hidropulso J1");
-	JButton btnAtaque2J1 = new JButton ("Rayo Hielo J1");
-	JButton btnAtaque3J1 = new JButton ("Giro Rápido J1");
-	JButton btnAtaque4J1 = new JButton ("Surf J1");
+	JButton btnAtaque1J1;
+	JButton btnAtaque2J1;
+	JButton btnAtaque3J1;
+	JButton btnAtaque4J1;
 
-	JButton btnAtaque1J2 = new JButton ("Onda Ígnea J2");
-	JButton btnAtaque2J2 = new JButton ("Lanzallamas J2");
-	JButton btnAtaque3J2 = new JButton ("Enfado J2");
-	JButton btnAtaque4J2 = new JButton ("Vuelo J2");
+	JButton btnAtaque1J2;
+	JButton btnAtaque2J2;
+	JButton btnAtaque3J2;
+	JButton btnAtaque4J2;
 
 	JDialog dlgRendirse = new JDialog();
 	JDialog dlgFin = new JDialog();
 
 	JLabel lblRendirse = new JLabel("¿Está seguro de rendirte?");
-	JLabel lblFin = new JLabel("Fin de la Partida, jugador 1 gana");
+	JLabel lblFin = new JLabel("Fin de la Partida.");
+	int vidaRestada;
+	String consultaJ1 = "";
+	String consultaJ2 = "";
+	
+
+	String consultaAtaquesJ1;
+	String consultaAtaquesJ2;
+	
 	public Partida(int idJ1,int idJ2) 
 	{
 
@@ -85,21 +99,35 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		this.setLayout(new GridLayout(4,1));
 		this.setSize(500, 300);
 		this.setLocationRelativeTo(null);
-
-		PBvida1.setValue(1000);
+		
+		consultaJ1 = "select * from jugadores join pokemons on idPokemonFK = idPokemon where idJugador ="+idJ1+";";
+		consultaJ2 = "select * from jugadores join pokemons on idPokemonFK = idPokemon where idJugador ="+idJ2+";";
+		
+		ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		
+		try {
+		PBvida1.setValue(rsJ1.getInt("puntosSalud"));
 		pnlVida1.setLayout(new FlowLayout());
 		pnlVida1.setBorder(bordejpanel);
+		
+		lblPkm1.setText(rsJ1.getString("nombrePokemon"));
 		pnlVida1.add(lblPkm1);
+		
+		lblVida1.setText("PS: "+PBvida1.getValue());
 		pnlVida1.add(lblVida1);
 		pnlVida1.add(PBvida1);
+		
 		pnluno.add(pnlVida1);
 		pnluno.add(pnlPkm1);
 		this.add(pnluno);
 
-		PBvida2.setValue(1000);
+		PBvida2.setValue(rsJ2.getInt("puntosSalud"));
 		pnlVida2.setLayout(new FlowLayout());
 		pnlVida2.setBorder(bordejpanel);
+		lblPkm2.setText(rsJ2.getString("nombrePokemon"));
 		pnlVida2.add(lblPkm2);
+		lblVida1.setText("PS: "+PBvida2.getValue());
 		pnlVida2.add(lblVida2);
 		pnlVida2.add(PBvida2);
 		pnldos.add(pnlVida2);
@@ -110,26 +138,60 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		pnlMovimientos.setLayout(new FlowLayout());
 		pnlMovimientos.setBorder(bordejpanel);
 		pnlMovimientosJ1.setLayout(new GridLayout(2,2));
+		
+		
+		consultaAtaquesJ1 = "SELECT * FROM movimientos join lineaMovimientos where idPokemonFK="+rsJ1.getInt("idPokemonFK")+";";
+		ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaque1J1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		String [] arrayMovimientos = new String[4];
+		int i=0;
+		rsMovimientos.next();
+		for(i=0;i<4;i++) 
+		{
+			arrayMovimientos[i]=rsMovimientos.getString("nombreMovimiento");
+		}
+		btnAtaque1J1.setText(arrayMovimientos[0]);
 		pnlMovimientosJ1.add(btnAtaque1J1);
 		btnAtaque1J1.addActionListener(this);
+		
+		btnAtaque2J1.setText(arrayMovimientos[1]);
 		pnlMovimientosJ1.add(btnAtaque2J1);
 		btnAtaque2J1.addActionListener(this);
+		
+		btnAtaque3J1.setText(arrayMovimientos[2]);
 		pnlMovimientosJ1.add(btnAtaque3J1);
 		btnAtaque3J1.addActionListener(this);
+		
+		btnAtaque4J1.setText(arrayMovimientos[3]);
 		pnlMovimientosJ1.add(btnAtaque4J1);
 		btnAtaque4J1.addActionListener(this);
 
 		pnlMovimientosJ2.setLayout(new GridLayout(2,2));
+		
+		consultaAtaquesJ2 = "SELECT * FROM movimientos join lineaMovimientos where idPokemonFK="+rsJ2.getInt("idPokemonFK")+";";
+		ResultSet rsMovimientos2 = bd.ejecutarSelect(consultaAtaquesJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		String [] arrayMovimientos2 = new String[4];
+		int j=0;
+		rsMovimientos.next();
+		for(j=0;j<4;j++) 
+		{
+			arrayMovimientos2[i]=rsMovimientos2.getString("nombreMovimiento");
+		}
+		btnAtaque1J2.setText(arrayMovimientos2[0]);
 		pnlMovimientosJ2.add(btnAtaque1J2);
 		btnAtaque1J2.addActionListener(this);
+		
+		btnAtaque2J2.setText(arrayMovimientos2[1]);
 		pnlMovimientosJ2.add(btnAtaque2J2);
 		btnAtaque2J2.addActionListener(this);
+		
+		btnAtaque3J2.setText(arrayMovimientos2[2]);
 		pnlMovimientosJ2.add(btnAtaque3J2);
 		btnAtaque3J2.addActionListener(this);
+		
+		btnAtaque4J2.setText(arrayMovimientos2[3]);
 		pnlMovimientosJ2.add(btnAtaque4J2);
 		btnAtaque4J2.addActionListener(this);
-
-
+		
 		pnltres.add(pnlMovimientos);
 
 		pnlOpciones.setLayout(new GridLayout(2,1));
@@ -167,7 +229,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		this.addWindowListener(this);
 		this.setVisible(true);
 
-
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+		}
+			
 	}
 	@Override
 	public void actionPerformed(ActionEvent ae) {
@@ -197,11 +262,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Blastoise Usó Hidropulso. ");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque1J1.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Charizard pierde 60 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida1.setValue(PBvida1.getValue()-60);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 
@@ -210,11 +276,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Blastoise usó Rayo Hielo. ");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque2J1.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Charizard pierde 90 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida1.setValue(PBvida1.getValue()-90);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 
@@ -223,11 +290,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Blastoise usó Giro Rápido. ");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque3J1.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Charizard pierde 20 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida1.setValue(PBvida1.getValue()-20);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 
@@ -236,11 +304,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Blastoise usó Surf.");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque4J1.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Charizard pierde 90 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida1.setValue(PBvida1.getValue()-90);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 
@@ -251,11 +320,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Charizard usó Onda Ígnea.");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque1J2.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Blastoise pierde 95 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida2.setValue(PBvida2.getValue()-95);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 
@@ -264,11 +334,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Charizard usó Lanzallamas.");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque2J2.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Blastoise pierde 90 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida2.setValue(PBvida2.getValue()-90);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 		} 
@@ -276,11 +347,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Charizard usó enfado.");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque3J2.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Blastoise pierde 120 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida2.setValue(PBvida2.getValue()-120);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 		} 
@@ -288,11 +360,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			pnlMovimientos.setVisible(false);
 			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText("Charizard usó vuelo.");
+			lblAtaque.setText("nombrePokemon"+" Usó "+btnAtaque4J2.getText());
 			pnlTranscurso.add(lblAtaque);
-			lblDanio.setText("Blastoise pierde 90 PS.");
+			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+			lblDanio.setText("nombrePokemon"+" pierde "+vidaRestada+" PS");
 			pnlTranscurso.add(lblDanio);
-			PBvida2.setValue(PBvida2.getValue()-95);
 			pnlTranscurso.add(lblQueHacer);
 			turno=turno+1;
 		}
@@ -310,10 +383,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		if(PBvida1.getValue()<=0) 
 		{
 			lblFin.setText("Jugador 1 Gana en "+turno/2+" turnos.");
-			
+
 			dlgFin.setVisible(true);
 			this.setVisible(false);
-			
+
 		} else if ( PBvida2.getValue()<=0) {
 			lblFin.setText("Jugador 2 Gana en "+turno/2+" turnos");
 			dlgFin.setVisible(true);
@@ -335,8 +408,13 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	}
 
 	@Override
-	public void windowClosing(WindowEvent e) {
-		
+	public void windowClosing(WindowEvent e) 
+	{
+		int seleccion = JOptionPane.showOptionDialog( null,"¿Desea finalizar la partida?","Finalizar partida",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,new Object[] { "Finalizar", "Cancelar"},"Cancelar");
+		if (seleccion == 0)
+		{
+			this.setVisible(false); 
+		}
 	}
 
 	@Override
@@ -362,5 +440,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		// TODO Auto-generated method stub
 
 	}
+
+
 
 }
