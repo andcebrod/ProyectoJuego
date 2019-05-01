@@ -22,22 +22,14 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 	JLabel lblNombre = new JLabel("Nombre:");
 	JLabel lblAtaque = new JLabel("Ataque:");
 	JLabel lblDefensa = new JLabel ("Defensa:");
-	JLabel lblVelocidad = new JLabel("Velocidad:");
-	JLabel lblAtaqueEsp = new JLabel ("Ataque Especial:");
-	JLabel lblDefensaEsp = new JLabel ("Defensa Especial:");
-	JLabel lblTipo1 = new JLabel("Tipo 1:");
-	JLabel lblTipo2 = new JLabel("Tipo 2:");
+	JLabel lblTipo = new JLabel("Tipo");
 	JLabel lblPuntosSalud = new JLabel ("Puntos de Salud:");
 	
 	JTextField txtNombre = new JTextField(10);
 	JTextField txtAtaque = new JTextField(10);
-	JTextField txtDefensa = new JTextField(10);
-	JTextField txtVelocidad = new JTextField(10);
-	JTextField txtAtaqueEsp = new JTextField(10);
-	JTextField txtDefensaEsp = new JTextField(10);
+	JTextField txtDefensa = new JTextField(10);;
 	JTextField txtPuntosSalud = new JTextField(10);
-	JTextField txtTipo1 = new JTextField(10);
-	JTextField txtTipo2 = new JTextField(10);
+	JTextField txtTipo = new JTextField(10);
 	
 	JButton btnAceptar = new JButton("Aceptar");
 	JPanel pnl = new JPanel();
@@ -56,50 +48,36 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 		this.setTitle("Estadísticas Pokemon");
 		this.setSize(300,600);
 		this.setLocationRelativeTo(null);
-		this.setLayout(new GridLayout(10,1));
+		this.setLayout(new GridLayout(5,1));
 		
-		int idTipo1 = 0;
-		int idTipo2 = 0;
+		int idTipo = 0;
 		
 		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons where idPokemon ="+idPokemon+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 		
 		
 		try {
 			rs.next();
-			idTipo1 = rs.getInt("idTipo1FK");
-			idTipo2 = rs.getInt("idTipo2FK");
-			
+			idTipo = rs.getInt("idTipoFK");
 			txtNombre.setText(rs.getString("nombrePokemon"));
 			txtPuntosSalud.setText(rs.getString("puntosSalud"));
 			txtAtaque.setText(rs.getString("ataque"));
 			txtDefensa.setText(rs.getString("defensa"));
-			txtVelocidad.setText(rs.getString("velocidad"));
-			txtAtaqueEsp.setText(rs.getString("ataqueEspecial"));
-			txtDefensaEsp.setText(rs.getString("defensaEspecial"));
 			txtNombre.setEditable(false);
 			txtPuntosSalud.setEditable(false);
 			txtAtaque.setEditable(false);
 			txtDefensa.setEditable(false);
-			txtVelocidad.setEditable(false);
-			txtAtaqueEsp.setEditable(false);
-			txtDefensaEsp.setEditable(false);
-			
 		} 
 		
 		catch (SQLException sqle)
 		{
 			JOptionPane.showMessageDialog(null,sqle.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		ResultSet rs2 = bd.ejecutarSelect("SELECT * FROM tipos where idTipo="+idTipo1+";",bd.conectar("juegoPokemon","root", "Studium2018;") );
-		ResultSet rs3 = bd.ejecutarSelect("SELECT * FROM tipos where idTipo="+idTipo2+";",bd.conectar("juegoPokemon","root", "Studium2018;") );
-		
+		ResultSet rs2 = bd.ejecutarSelect("SELECT * FROM tipos where idTipo="+idTipo+";",bd.conectar("juegoPokemon","root", "Studium2018;") );		
 		try {
 			rs2.next();
-			rs3.next();
-			txtTipo1.setText(rs2.getString("nombreTipo"));
-			txtTipo2.setText(rs3.getString("nombreTipo"));
-			txtTipo1.setEditable(false);
-			txtTipo2.setEditable(false);
+
+			txtTipo.setText(rs2.getString("nombreTipo"));
+			txtTipo.setEditable(false);
 			
 		} catch (SQLException sqle)
 		{
@@ -113,27 +91,17 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 		pnl2.add(txtAtaque);
 		pnl3.add(lblDefensa);
 		pnl3.add(txtDefensa);
-		pnl4.add(lblVelocidad);
-		pnl4.add(txtVelocidad);
-		pnl5.add(lblAtaqueEsp);
-		pnl5.add(txtAtaqueEsp);
-		pnl6.add(lblDefensaEsp);
-		pnl6.add(txtDefensaEsp);
-		pnl7.add(lblTipo1);
-		pnl7.add(txtTipo1);
-		pnl8.add(lblTipo2);
-		pnl8.add(txtTipo2);
-		pnl9.add(btnAceptar);
+		pnl4.add(lblTipo);
+		pnl4.add(txtTipo);
+		pnl5.add(btnAceptar);
 		
+		this.add(pnl);
 		this.add(pnl1);
 		this.add(pnl2);
 		this.add(pnl3);
 		this.add(pnl4);
 		this.add(pnl5);
-		this.add(pnl6);
-		this.add(pnl7);
-		this.add(pnl8);
-		this.add(pnl9);
+
 		
 		this.addWindowListener(this);
 		btnAceptar.addActionListener(this);
