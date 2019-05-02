@@ -35,6 +35,7 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 	
 	String jugador2="";
 	int idJugador1=0;
+	int idJugador2 =0;
 	
 	public Seleccion2(String j2, int idJ1) 
 	{
@@ -86,15 +87,15 @@ public class Seleccion2 extends JFrame implements WindowListener, ActionListener
 	public void actionPerformed(ActionEvent ae) {
 		if(btnAceptar.equals(ae.getSource())) 
 		{
-			int idJugador2 = 0;
+			idJugador2 = 0;
 			String[] array= Pokemons.getSelectedItem().toString().split(".-");
 			int idPokemon = Integer.parseInt(array[0]);
 			bd.ejecutarIDA("INSERT INTO jugadores VALUES (null,'"+jugador2+"',"+idPokemon+");", bd.conectar("juegoPokemon","root", "Studium2018;"));
-			JOptionPane.showMessageDialog(null,"Primer Jugador añadido!","Jugador añadido", JOptionPane.INFORMATION_MESSAGE);
 			ResultSet jugadorCreado = bd.ejecutarSelect("SELECT idJugador FROM jugadores ORDER BY idJugador DESC;", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				jugadorCreado.next();
 				idJugador2 = jugadorCreado.getInt("idJugador");
+				JOptionPane.showMessageDialog(null,"Segundo Jugador añadido!","Jugador añadido", JOptionPane.INFORMATION_MESSAGE);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);

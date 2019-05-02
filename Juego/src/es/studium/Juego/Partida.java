@@ -61,15 +61,15 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	JButton btnSi = new JButton ("Sí");
 	JButton btnNo = new JButton ("No");
 
-	JButton btnAtaque1J1;
-	JButton btnAtaque2J1;
-	JButton btnAtaque3J1;
-	JButton btnAtaque4J1;
+	JButton btnAtaque1J1 = new JButton ("");
+	JButton btnAtaque2J1 = new JButton ("");
+	JButton btnAtaque3J1 = new JButton ("");
+	JButton btnAtaque4J1 = new JButton ("");
 
-	JButton btnAtaque1J2;
-	JButton btnAtaque2J2;
-	JButton btnAtaque3J2;
-	JButton btnAtaque4J2;
+	JButton btnAtaque1J2 = new JButton ("");
+	JButton btnAtaque2J2 = new JButton ("");
+	JButton btnAtaque3J2 = new JButton ("");
+	JButton btnAtaque4J2 = new JButton ("");
 
 	JDialog dlgRendirse = new JDialog();
 	JDialog dlgFin = new JDialog();
@@ -79,12 +79,12 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	int vidaRestada;
 	String consultaJ1 = "";
 	String consultaJ2 = "";
-	
+
 
 	String consultaAtaquesJ1;
 	String consultaAtaquesJ2;
 	int ataque, defensa, idAtaque, tipoPkm;
-	
+
 	public Partida(int idJ1,int idJ2) 
 	{
 
@@ -92,140 +92,166 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		this.setLayout(new GridLayout(4,1));
 		this.setSize(500, 300);
 		this.setLocationRelativeTo(null);
-		
+
 		consultaJ1 = "select * from jugadores join pokemons on idPokemonFK = idPokemon where idJugador ="+idJ1+";";
 		consultaJ2 = "select * from jugadores join pokemons on idPokemonFK = idPokemon where idJugador ="+idJ2+";";
-		
+
 		ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-		ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 		
+
 		try {
-		PBvida1.setValue(rsJ1.getInt("puntosSalud"));
-		pnlVida1.setLayout(new FlowLayout());
-		pnlVida1.setBorder(bordejpanel);
-		
-		lblPkm1.setText(rsJ1.getString("nombrePokemon"));
-		pnlVida1.add(lblPkm1);
-		
-		lblVida1.setText("PS: "+PBvida1.getValue());
-		pnlVida1.add(lblVida1);
-		pnlVida1.add(PBvida1);
-		
-		pnluno.add(pnlVida1);
-		pnluno.add(pnlPkm1);
-		this.add(pnluno);
+			rsJ1.next();
+			
+			PBvida1 = new JProgressBar(0,rsJ1.getInt("puntosSalud"));
 
-		PBvida2.setValue(rsJ2.getInt("puntosSalud"));
-		pnlVida2.setLayout(new FlowLayout());
-		pnlVida2.setBorder(bordejpanel);
-		lblPkm2.setText(rsJ2.getString("nombrePokemon"));
-		pnlVida2.add(lblPkm2);
-		lblVida1.setText("PS: "+PBvida2.getValue());
-		pnlVida2.add(lblVida2);
-		pnlVida2.add(PBvida2);
-		pnldos.add(pnlVida2);
-		pnldos.add(pnlPkm2);
-		this.add(pnldos);
+			PBvida1.setValue(rsJ1.getInt("puntosSalud"));
+			pnlVida1.setLayout(new FlowLayout());
+			pnlVida1.setBorder(bordejpanel);
 
-		pnlMovimientos.setVisible(false);
-		pnlMovimientos.setLayout(new FlowLayout());
-		pnlMovimientos.setBorder(bordejpanel);
-		pnlMovimientosJ1.setLayout(new GridLayout(2,2));
-		
-		
-		consultaAtaquesJ1 = "SELECT * FROM movimientos join lineaMovimientos where idPokemonFK="+rsJ1.getInt("idPokemonFK")+";";
-		ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaquesJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-		String [] arrayMovimientos = new String[4];
-		int i=0;
-		rsMovimientos.next();
-		for(i=0;i<4;i++) 
-		{
-			arrayMovimientos[i]=rsMovimientos.getString("nombreMovimiento");
-		}
-		btnAtaque1J1.setText(arrayMovimientos[0]);
-		pnlMovimientosJ1.add(btnAtaque1J1);
-		btnAtaque1J1.addActionListener(this);
-		
-		btnAtaque2J1.setText(arrayMovimientos[1]);
-		pnlMovimientosJ1.add(btnAtaque2J1);
-		btnAtaque2J1.addActionListener(this);
-		
-		btnAtaque3J1.setText(arrayMovimientos[2]);
-		pnlMovimientosJ1.add(btnAtaque3J1);
-		btnAtaque3J1.addActionListener(this);
-		
-		btnAtaque4J1.setText(arrayMovimientos[3]);
-		pnlMovimientosJ1.add(btnAtaque4J1);
-		btnAtaque4J1.addActionListener(this);
+			lblPkm1.setText(rsJ1.getString("nombrePokemon"));
+			pnlVida1.add(lblPkm1);
 
-		pnlMovimientosJ2.setLayout(new GridLayout(2,2));
-		
-		consultaAtaquesJ2 = "SELECT * FROM movimientos join lineaMovimientos where idPokemonFK="+rsJ2.getInt("idPokemonFK")+";";
-		ResultSet rsMovimientos2 = bd.ejecutarSelect(consultaAtaquesJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-		String [] arrayMovimientos2 = new String[4];
-		int j=0;
-		rsMovimientos.next();
-		for(j=0;j<4;j++) 
-		{
-			arrayMovimientos2[i]=rsMovimientos2.getString("nombreMovimiento");
-		}
-		btnAtaque1J2.setText(arrayMovimientos2[0]);
-		pnlMovimientosJ2.add(btnAtaque1J2);
-		btnAtaque1J2.addActionListener(this);
-		
-		btnAtaque2J2.setText(arrayMovimientos2[1]);
-		pnlMovimientosJ2.add(btnAtaque2J2);
-		btnAtaque2J2.addActionListener(this);
-		
-		btnAtaque3J2.setText(arrayMovimientos2[2]);
-		pnlMovimientosJ2.add(btnAtaque3J2);
-		btnAtaque3J2.addActionListener(this);
-		
-		btnAtaque4J2.setText(arrayMovimientos2[3]);
-		pnlMovimientosJ2.add(btnAtaque4J2);
-		btnAtaque4J2.addActionListener(this);
-		
-		pnltres.add(pnlMovimientos);
+			lblVida1.setText("PS: "+PBvida1.getValue());
+			pnlVida1.add(lblVida1);
+			pnlVida1.add(PBvida1);
 
-		pnlOpciones.setLayout(new GridLayout(2,1));
-		pnlOpciones.setBorder(bordejpanel);
-		pnlOpciones.add(btnAtacar);
-		btnAtacar.addActionListener(this);
-		pnlOpciones.add(btnRendirse);
-		btnRendirse.addActionListener(this);
-		pnltres.add(pnlOpciones);
-		this.add(pnltres);
-
-		pnlTranscurso.setLayout(new FlowLayout());
-		pnlTranscurso.setBorder(bordejpanel);
-		pnlTranscurso.add(lblQueHacer);
-		pnlcuatro.add(pnlTranscurso);
-		this.add(pnlcuatro);
-
-
-		dlgRendirse.setSize(200,100);
-		dlgRendirse.setTitle("Rendirse");
-		dlgRendirse.setLayout(new FlowLayout());
-		dlgRendirse.add(lblRendirse);
-		dlgRendirse.add(btnSi);
-		btnSi.addActionListener(this);
-		dlgRendirse.add(btnNo);
-		btnNo.addActionListener(this);
-		dlgRendirse.setLocationRelativeTo(null);
-
-		dlgFin.setSize(200,100);
-		dlgFin.setTitle("Fin de Partida");
-		dlgFin.setLayout(new FlowLayout());
-		dlgFin.setLocationRelativeTo(null);
-		dlgFin.add(lblFin);
-
-		this.addWindowListener(this);
-		this.setVisible(true);
-
+			pnluno.add(pnlVida1);
+			pnluno.add(pnlPkm1);
+			this.add(pnluno);
 		} catch(SQLException e) {
-			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error 1 ", JOptionPane.ERROR_MESSAGE);
 		}
 			
+			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			try {
+			rsJ2.next();
+			PBvida2 = new JProgressBar(0,rsJ2.getInt("puntosSalud"));
+			PBvida2.setValue(rsJ2.getInt("puntosSalud"));
+			pnlVida2.setLayout(new FlowLayout());
+			pnlVida2.setBorder(bordejpanel);
+			lblPkm2.setText(rsJ2.getString("nombrePokemon"));
+			pnlVida2.add(lblPkm2);
+			lblVida2.setText("PS: "+PBvida2.getValue());
+			pnlVida2.add(lblVida2);
+			pnlVida2.add(PBvida2);
+			pnldos.add(pnlVida2);
+			pnldos.add(pnlPkm2);
+			this.add(pnldos);
+
+			pnlMovimientos.setVisible(false);
+			pnlMovimientos.setLayout(new FlowLayout());
+			pnlMovimientos.setBorder(bordejpanel);
+			pnlMovimientosJ1.setLayout(new GridLayout(2,2));
+			
+			
+			consultaAtaquesJ1 = "SELECT * FROM lineaMovimientos join movimientos on idMovimiento = idMovimientoFK where idPokemonFK="+rsJ1.getInt("idPokemonFK")+";";
+			} catch(SQLException e) {
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error 2", JOptionPane.ERROR_MESSAGE);
+			}
+			ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaquesJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			try {
+			String [] arrayMovimientos = new String[4];
+			int i=0;
+			rsMovimientos.next();
+			for(i=0;i<4;i++) 
+			{
+				arrayMovimientos[i]=rsMovimientos.getString("nombreMovimiento");
+				rsMovimientos.next();
+			}
+			
+			btnAtaque1J1.setText(arrayMovimientos[0]);
+			pnlMovimientosJ1.add(btnAtaque1J1);
+			btnAtaque1J1.addActionListener(this);
+
+			btnAtaque2J1.setText(arrayMovimientos[1]);
+			pnlMovimientosJ1.add(btnAtaque2J1);
+			btnAtaque2J1.addActionListener(this);
+
+			btnAtaque3J1.setText(arrayMovimientos[2]);
+			pnlMovimientosJ1.add(btnAtaque3J1);
+			btnAtaque3J1.addActionListener(this);
+
+			btnAtaque4J1.setText(arrayMovimientos[3]);
+			pnlMovimientosJ1.add(btnAtaque4J1);
+			btnAtaque4J1.addActionListener(this);
+			
+			
+			pnlMovimientosJ2.setLayout(new GridLayout(2,2));
+			
+			
+			consultaAtaquesJ2 = "SELECT * FROM lineaMovimientos join movimientos on idMovimiento = idMovimientoFK where idPokemonFK="+rsJ2.getInt("idPokemonFK")+";";
+			} catch(SQLException e) {
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error 3", JOptionPane.ERROR_MESSAGE);
+			}
+				
+			ResultSet rsMovimientos2 = bd.ejecutarSelect(consultaAtaquesJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			try {
+			String [] arrayMovimientos2 = new String[4];
+			int j=0;
+			rsMovimientos2.next();
+			for(j=0;j<4;j++) 
+			{
+				arrayMovimientos2[j]=rsMovimientos2.getString("nombreMovimiento");
+				rsMovimientos2.next();
+			}
+			btnAtaque1J2.setText(arrayMovimientos2[0]);
+			pnlMovimientosJ2.add(btnAtaque1J2);
+			btnAtaque1J2.addActionListener(this);
+
+			btnAtaque2J2.setText(arrayMovimientos2[1]);
+			pnlMovimientosJ2.add(btnAtaque2J2);
+			btnAtaque2J2.addActionListener(this);
+
+			btnAtaque3J2.setText(arrayMovimientos2[2]);
+			pnlMovimientosJ2.add(btnAtaque3J2);
+			btnAtaque3J2.addActionListener(this);
+
+			btnAtaque4J2.setText(arrayMovimientos2[3]);
+			pnlMovimientosJ2.add(btnAtaque4J2);
+			btnAtaque4J2.addActionListener(this);
+			} catch(SQLException e) {
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error 4", JOptionPane.ERROR_MESSAGE);
+			}
+			
+			pnltres.add(pnlMovimientos);
+
+			pnlOpciones.setLayout(new GridLayout(2,1));
+			pnlOpciones.setBorder(bordejpanel);
+			pnlOpciones.add(btnAtacar);
+			btnAtacar.addActionListener(this);
+			pnlOpciones.add(btnRendirse);
+			btnRendirse.addActionListener(this);
+			pnltres.add(pnlOpciones);
+			this.add(pnltres);
+
+			pnlTranscurso.setLayout(new FlowLayout());
+			pnlTranscurso.setBorder(bordejpanel);
+			pnlTranscurso.add(lblQueHacer);
+			pnlcuatro.add(pnlTranscurso);
+			this.add(pnlcuatro);
+
+
+			dlgRendirse.setSize(200,100);
+			dlgRendirse.setTitle("Rendirse");
+			dlgRendirse.setLayout(new FlowLayout());
+			dlgRendirse.add(lblRendirse);
+			dlgRendirse.add(btnSi);
+			btnSi.addActionListener(this);
+			dlgRendirse.add(btnNo);
+			btnNo.addActionListener(this);
+			dlgRendirse.setLocationRelativeTo(null);
+
+			dlgFin.setSize(200,100);
+			dlgFin.setTitle("Fin de Partida");
+			dlgFin.setLayout(new FlowLayout());
+			dlgFin.setLocationRelativeTo(null);
+			dlgFin.add(lblFin);
+
+			this.addWindowListener(this);
+			this.setVisible(true);
+
+		
+
 	}
 	@Override
 	public void actionPerformed(ActionEvent ae) {
@@ -253,224 +279,246 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		//ATAQUES J1
 		if(btnAtaque1J1.equals(ae.getSource())) 
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque1J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ1.getString("nombrePokemon")+" Usó "+btnAtaque1J1.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-		
-			
-			ataque = rsJ1.getInt("ataque");
-			defensa = rsJ2.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ2.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ2.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ1m.getString("nombrePokemon")+" Usó "+btnAtaque1J1.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ1m.getInt("ataque");
+				defensa = rsJ2m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ2m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A1J1", JOptionPane.ERROR_MESSAGE);
 			}
 
 		} 
 		else if (btnAtaque2J1.equals(ae.getSource()))
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque2J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ1.getString("nombrePokemon")+" Usó "+btnAtaque2J1.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ1.getInt("ataque");
-			defensa = rsJ2.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ2.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ2.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ1m.getString("nombrePokemon")+" Usó "+btnAtaque2J1.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ1m.getInt("ataque");
+				defensa = rsJ2m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ2m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A2J1", JOptionPane.ERROR_MESSAGE);
 			}
 		} 
 		else if(btnAtaque3J1.equals(ae.getSource())) 
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque3J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ1.getString("nombrePokemon")+" Usó "+btnAtaque3J1.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ1.getInt("ataque");
-			defensa = rsJ2.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ2.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ2.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ1m.getString("nombrePokemon")+" Usó "+btnAtaque3J1.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ1m.getInt("ataque");
+				defensa = rsJ2m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ2m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A3J1", JOptionPane.ERROR_MESSAGE);
 			}
 		} 
 		else if(btnAtaque4J1.equals(ae.getSource())) 
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque4J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ1.getString("nombrePokemon")+" Usó "+btnAtaque4J1.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ1.getInt("ataque");
-			defensa = rsJ2.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ2.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ2.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ1m.getString("nombrePokemon")+" Usó "+btnAtaque4J1.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ1m.getInt("ataque");
+				defensa = rsJ2m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ2m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A4J1", JOptionPane.ERROR_MESSAGE);
 			}
 		} 
 
 		//ATAQUES J2
 		if(btnAtaque1J2.equals(ae.getSource())) 
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque1J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ2.getString("nombrePokemon")+" Usó "+btnAtaque1J2.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ2.getInt("ataque");
-			defensa = rsJ1.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ1.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ1.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ2m.getString("nombrePokemon")+" Usó "+btnAtaque1J2.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ2m.getInt("ataque");
+				defensa = rsJ1m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ1m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A1J2", JOptionPane.ERROR_MESSAGE);
 			}
 		} 
 		else if (btnAtaque2J2.equals(ae.getSource()))
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque2J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ2.getString("nombrePokemon")+" Usó "+btnAtaque2J2.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ2.getInt("ataque");
-			defensa = rsJ1.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ1.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ1.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ2m.getString("nombrePokemon")+" Usó "+btnAtaque2J2.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ2m.getInt("ataque");
+				defensa = rsJ1m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ1m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A2J2", JOptionPane.ERROR_MESSAGE);
 			}
 		} 
 		else if(btnAtaque3J2.equals(ae.getSource())) 
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque3J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ2.getString("nombrePokemon")+" Usó "+btnAtaque3J2.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ2.getInt("ataque");
-			defensa = rsJ1.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ1.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ1.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ2m.getString("nombrePokemon")+" Usó "+btnAtaque3J2.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ2m.getInt("ataque");
+				defensa = rsJ1m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ1m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A3J2", JOptionPane.ERROR_MESSAGE);
 			}
 		} 
 		else if(btnAtaque4J2.equals(ae.getSource())) 
 		{
-			ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			
+			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+
 			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque4J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
-			pnlMovimientos.setVisible(false);
-			pnlTranscurso.remove(lblQueHacer);
-			lblAtaque.setText(rsJ2.getString("nombrePokemon")+" Usó "+btnAtaque4J2.getText());
-			pnlTranscurso.add(lblAtaque);
-			
-			ataque = rsJ2.getInt("ataque");
-			defensa = rsJ1.getInt("defensa");
-			idAtaque = rsMov.getInt("idMovimiento");
-			tipoPkm = rsJ1.getInt("idTipoFK");
-			
-			vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-			PBvida1.setValue(PBvida1.getValue()-vidaRestada);
-			lblDanio.setText(rsJ1.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
-			pnlTranscurso.add(lblDanio);
-			pnlTranscurso.add(lblQueHacer);
-			turno=turno+1;
+				rsJ1m.next();
+				rsJ2m.next();
+				rsMov.next();
+				pnlMovimientos.setVisible(false);
+				pnlTranscurso.remove(lblQueHacer);
+				lblAtaque.setText(rsJ2m.getString("nombrePokemon")+" Usó "+btnAtaque4J2.getText());
+				pnlTranscurso.add(lblAtaque);
+
+				ataque = rsJ2m.getInt("ataque");
+				defensa = rsJ1m.getInt("defensa");
+				idAtaque = rsMov.getInt("idMovimiento");
+				tipoPkm = rsJ1m.getInt("idTipoFK");
+
+				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
+				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
+				pnlTranscurso.add(lblDanio);
+				pnlTranscurso.add(lblQueHacer);
+				turno=turno+1;
 			} catch (SQLException e){
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null,e.getMessage(),"Error A4J2", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 		//MOSTRAR MOVIMIENTOS
@@ -487,12 +535,13 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		if(PBvida1.getValue()<=0) 
 		{
 			lblFin.setText("Jugador 1 Gana en "+turno/2+" turnos.");
-
+			bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
 			dlgFin.setVisible(true);
 			this.setVisible(false);
 
 		} else if ( PBvida2.getValue()<=0) {
 			lblFin.setText("Jugador 2 Gana en "+turno/2+" turnos");
+			bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
 			dlgFin.setVisible(true);
 			this.setVisible(false);
 		}
@@ -544,6 +593,6 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		// TODO Auto-generated method stub
 
 	}
-	
+
 
 }
