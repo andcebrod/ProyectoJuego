@@ -43,7 +43,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 
 	JPanel pnlTranscurso = new JPanel();
 
-	JLabel lblQueHacer = new JLabel("¿Qué quieres hacer?");
+	JLabel lblQueHacer = new JLabel("");
 	JLabel lblAtaque = new JLabel("");
 	JLabel lblDanio = new JLabel("");
 
@@ -80,14 +80,22 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	String consultaJ1 = "";
 	String consultaJ2 = "";
 
+	int [] arrayMovimientosid = new int[4];
+	int [] arrayMovimientos2id = new int[4];
 
 	String consultaAtaquesJ1;
 	String consultaAtaquesJ2;
 	int ataque, defensa, idAtaque, tipoPkm;
+	int idJugador1;
+	int idJugador2;
+	
+	String nombreJugador1;
+	String nombreJugador2;
 
 	public Partida(int idJ1,int idJ2) 
 	{
-
+		idJugador1=idJ1;
+		idJugador2=idJ2;
 		this.setTitle("Batalla");
 		this.setLayout(new GridLayout(4,1));
 		this.setSize(500, 300);
@@ -97,11 +105,11 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		consultaJ2 = "select * from jugadores join pokemons on idPokemonFK = idPokemon where idJugador ="+idJ2+";";
 
 		ResultSet rsJ1 = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-		
+
 
 		try {
 			rsJ1.next();
-			
+			nombreJugador1 = rsJ1.getString("nombreJugador");
 			PBvida1 = new JProgressBar(0,rsJ1.getInt("puntosSalud"));
 
 			PBvida1.setValue(rsJ1.getInt("puntosSalud"));
@@ -118,13 +126,15 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			pnluno.add(pnlVida1);
 			pnluno.add(pnlPkm1);
 			this.add(pnluno);
+			lblQueHacer.setText(nombreJugador1+", ¿Qué quieres hacer?");
 		} catch(SQLException e) {
 			JOptionPane.showMessageDialog(null,e.getMessage(),"Error 1 ", JOptionPane.ERROR_MESSAGE);
 		}
-			
-			ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			try {
+
+		ResultSet rsJ2 = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		try {
 			rsJ2.next();
+			nombreJugador2 = rsJ2.getString("nombreJugador");
 			PBvida2 = new JProgressBar(0,rsJ2.getInt("puntosSalud"));
 			PBvida2.setValue(rsJ2.getInt("puntosSalud"));
 			pnlVida2.setLayout(new FlowLayout());
@@ -142,23 +152,25 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			pnlMovimientos.setLayout(new FlowLayout());
 			pnlMovimientos.setBorder(bordejpanel);
 			pnlMovimientosJ1.setLayout(new GridLayout(2,2));
-			
-			
+
+
 			consultaAtaquesJ1 = "SELECT * FROM lineaMovimientos join movimientos on idMovimiento = idMovimientoFK where idPokemonFK="+rsJ1.getInt("idPokemonFK")+";";
-			} catch(SQLException e) {
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error 2", JOptionPane.ERROR_MESSAGE);
-			}
-			ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaquesJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			try {
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error 2", JOptionPane.ERROR_MESSAGE);
+		}
+		ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaquesJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		try {
 			String [] arrayMovimientos = new String[4];
+
 			int i=0;
 			rsMovimientos.next();
 			for(i=0;i<4;i++) 
 			{
 				arrayMovimientos[i]=rsMovimientos.getString("nombreMovimiento");
+				arrayMovimientosid[i]=rsMovimientos.getInt("idMovimiento");
 				rsMovimientos.next();
 			}
-			
+
 			btnAtaque1J1.setText(arrayMovimientos[0]);
 			pnlMovimientosJ1.add(btnAtaque1J1);
 			btnAtaque1J1.addActionListener(this);
@@ -174,24 +186,26 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			btnAtaque4J1.setText(arrayMovimientos[3]);
 			pnlMovimientosJ1.add(btnAtaque4J1);
 			btnAtaque4J1.addActionListener(this);
-			
-			
+
+
 			pnlMovimientosJ2.setLayout(new GridLayout(2,2));
-			
-			
+
+
 			consultaAtaquesJ2 = "SELECT * FROM lineaMovimientos join movimientos on idMovimiento = idMovimientoFK where idPokemonFK="+rsJ2.getInt("idPokemonFK")+";";
-			} catch(SQLException e) {
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error 3", JOptionPane.ERROR_MESSAGE);
-			}
-				
-			ResultSet rsMovimientos2 = bd.ejecutarSelect(consultaAtaquesJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			try {
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error 3", JOptionPane.ERROR_MESSAGE);
+		}
+
+		ResultSet rsMovimientos2 = bd.ejecutarSelect(consultaAtaquesJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		try {
 			String [] arrayMovimientos2 = new String[4];
+
 			int j=0;
 			rsMovimientos2.next();
 			for(j=0;j<4;j++) 
 			{
 				arrayMovimientos2[j]=rsMovimientos2.getString("nombreMovimiento");
+				arrayMovimientos2id[j]=rsMovimientos2.getInt("idMovimiento");
 				rsMovimientos2.next();
 			}
 			btnAtaque1J2.setText(arrayMovimientos2[0]);
@@ -209,48 +223,48 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			btnAtaque4J2.setText(arrayMovimientos2[3]);
 			pnlMovimientosJ2.add(btnAtaque4J2);
 			btnAtaque4J2.addActionListener(this);
-			} catch(SQLException e) {
-				JOptionPane.showMessageDialog(null,e.getMessage(),"Error 4", JOptionPane.ERROR_MESSAGE);
-			}
-			
-			pnltres.add(pnlMovimientos);
+		} catch(SQLException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error 4", JOptionPane.ERROR_MESSAGE);
+		}
 
-			pnlOpciones.setLayout(new GridLayout(2,1));
-			pnlOpciones.setBorder(bordejpanel);
-			pnlOpciones.add(btnAtacar);
-			btnAtacar.addActionListener(this);
-			pnlOpciones.add(btnRendirse);
-			btnRendirse.addActionListener(this);
-			pnltres.add(pnlOpciones);
-			this.add(pnltres);
+		pnltres.add(pnlMovimientos);
 
-			pnlTranscurso.setLayout(new FlowLayout());
-			pnlTranscurso.setBorder(bordejpanel);
-			pnlTranscurso.add(lblQueHacer);
-			pnlcuatro.add(pnlTranscurso);
-			this.add(pnlcuatro);
+		pnlOpciones.setLayout(new GridLayout(2,1));
+		pnlOpciones.setBorder(bordejpanel);
+		pnlOpciones.add(btnAtacar);
+		btnAtacar.addActionListener(this);
+		pnlOpciones.add(btnRendirse);
+		btnRendirse.addActionListener(this);
+		pnltres.add(pnlOpciones);
+		this.add(pnltres);
+
+		pnlTranscurso.setLayout(new FlowLayout());
+		pnlTranscurso.setBorder(bordejpanel);
+		pnlTranscurso.add(lblQueHacer);
+		pnlcuatro.add(pnlTranscurso);
+		this.add(pnlcuatro);
 
 
-			dlgRendirse.setSize(200,100);
-			dlgRendirse.setTitle("Rendirse");
-			dlgRendirse.setLayout(new FlowLayout());
-			dlgRendirse.add(lblRendirse);
-			dlgRendirse.add(btnSi);
-			btnSi.addActionListener(this);
-			dlgRendirse.add(btnNo);
-			btnNo.addActionListener(this);
-			dlgRendirse.setLocationRelativeTo(null);
+		dlgRendirse.setSize(200,100);
+		dlgRendirse.setTitle("Rendirse");
+		dlgRendirse.setLayout(new FlowLayout());
+		dlgRendirse.add(lblRendirse);
+		dlgRendirse.add(btnSi);
+		btnSi.addActionListener(this);
+		dlgRendirse.add(btnNo);
+		btnNo.addActionListener(this);
+		dlgRendirse.setLocationRelativeTo(null);
 
-			dlgFin.setSize(200,100);
-			dlgFin.setTitle("Fin de Partida");
-			dlgFin.setLayout(new FlowLayout());
-			dlgFin.setLocationRelativeTo(null);
-			dlgFin.add(lblFin);
+		dlgFin.setSize(200,100);
+		dlgFin.setTitle("Fin de Partida");
+		dlgFin.setLayout(new FlowLayout());
+		dlgFin.setLocationRelativeTo(null);
+		dlgFin.add(lblFin);
 
-			this.addWindowListener(this);
-			this.setVisible(true);
+		this.addWindowListener(this);
+		this.setVisible(true);
 
-		
+
 
 	}
 	@Override
@@ -281,7 +295,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		{
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque1J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientosid[0]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				rsJ1m.next();
 				rsJ2m.next();
@@ -297,9 +311,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				tipoPkm = rsJ2m.getInt("idTipoFK");
 
 				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				PBvida2.setValue(PBvida2.getValue()-vidaRestada);
 				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador2+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -312,7 +327,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque2J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientosid[1]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 
 			try {
 				rsJ1m.next();
@@ -329,9 +344,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				tipoPkm = rsJ2m.getInt("idTipoFK");
 
 				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				PBvida2.setValue(PBvida2.getValue()-vidaRestada);
 				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador2+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -343,7 +359,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque3J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientosid[2]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 
 			try {
 				rsJ1m.next();
@@ -360,9 +376,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				tipoPkm = rsJ2m.getInt("idTipoFK");
 
 				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				PBvida2.setValue(PBvida2.getValue()-vidaRestada);
 				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador2+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -374,7 +391,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque4J1.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientosid[3]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				rsJ1m.next();
 				rsJ2m.next();
@@ -390,9 +407,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				tipoPkm = rsJ2m.getInt("idTipoFK");
 
 				vidaRestada = f.calcularDanio(ataque, defensa, idAtaque, tipoPkm);
-				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
+				PBvida2.setValue(PBvida2.getValue()-vidaRestada);
 				lblDanio.setText(rsJ2m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador2+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -406,7 +424,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque1J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientos2id[0]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				rsJ1m.next();
 				rsJ2m.next();
@@ -425,6 +443,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
 				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador1+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -436,7 +455,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque2J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientos2id[1]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				rsJ1m.next();
 				rsJ2m.next();
@@ -455,6 +474,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
 				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador1+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -466,7 +486,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque3J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientos2id[2]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				rsJ1m.next();
 				rsJ2m.next();
@@ -485,6 +505,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
 				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador1+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -496,7 +517,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			ResultSet rsJ1m = bd.ejecutarSelect(consultaJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
 			ResultSet rsJ2m = bd.ejecutarSelect(consultaJ2, bd.conectar("juegoPokemon","root", "Studium2018;"));
 
-			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where nombreMovimiento ="+btnAtaque4J2.getText()+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet rsMov = bd.ejecutarSelect("SELECT * FROM movimientos where idMovimiento ="+arrayMovimientos2id[3]+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
 			try {
 				rsJ1m.next();
 				rsJ2m.next();
@@ -515,6 +536,7 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 				PBvida1.setValue(PBvida1.getValue()-vidaRestada);
 				lblDanio.setText(rsJ1m.getString("nombrePokemon")+" pierde "+vidaRestada+" PS");
 				pnlTranscurso.add(lblDanio);
+				lblQueHacer.setText(nombreJugador1+", ¿Qué quieres hacer?");
 				pnlTranscurso.add(lblQueHacer);
 				turno=turno+1;
 			} catch (SQLException e){
@@ -534,16 +556,16 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		}
 		if(PBvida1.getValue()<=0) 
 		{
-			lblFin.setText("Jugador 1 Gana en "+turno/2+" turnos.");
-			bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
-			dlgFin.setVisible(true);
-			this.setVisible(false);
+				lblFin.setText(nombreJugador2+" Gana en "+turno/2+" turnos.");
+				bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
+				dlgFin.setVisible(true);
+				this.setVisible(false);
 
 		} else if ( PBvida2.getValue()<=0) {
-			lblFin.setText("Jugador 2 Gana en "+turno/2+" turnos");
-			bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
-			dlgFin.setVisible(true);
-			this.setVisible(false);
+				lblFin.setText(nombreJugador1+" Gana en "+turno/2+" turnos.");
+				bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
+				dlgFin.setVisible(true);
+				this.setVisible(false);
 		}
 
 	}

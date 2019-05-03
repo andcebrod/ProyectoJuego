@@ -12,7 +12,7 @@ public class Funciones {
 	public int calcularDanio (int ataque, int defensa, int idAtaque,int tipoPkm) 
 	{
 		
-		String consultaMovimiento = "SELECT * FROM movimiento WHERE idMovimiento ="+idAtaque+";";
+		String consultaMovimiento = "SELECT * FROM movimientos WHERE idMovimiento ="+idAtaque+";";
 		ResultSet rs = bd.ejecutarSelect(consultaMovimiento, bd.conectar("juegoPokemon","root", "Studium2018;"));
 		
 		int potencia;
