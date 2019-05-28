@@ -30,14 +30,14 @@ public class MenuPrincipal extends JFrame implements WindowListener, ActionListe
 		this.setSize(600,350);
 		this.setLayout(new GridBagLayout());
 		GridBagConstraints gbcPnlImagen = new GridBagConstraints();
-		gbcPnlImagen.fill = GridBagConstraints.BOTH;
+
 		gbcPnlImagen.gridy = 0;
 		this.add(pnlImagen, gbcPnlImagen);
 		lblImg.setIcon(new ImageIcon("imagenes/pokemon.png"));
 		
 		pnlImagen.add(lblImg);
 		GridBagConstraints gbcPnluno = new GridBagConstraints();
-		gbcPnluno.fill = GridBagConstraints.BOTH;
+
 		gbcPnluno.gridy = 1;
 		this.add(pnluno, gbcPnluno);
 		pnluno.add(btnIniciar);
