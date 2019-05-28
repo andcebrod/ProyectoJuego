@@ -91,14 +91,16 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 	
 	String nombreJugador1;
 	String nombreJugador2;
+	private final JLabel label = new JLabel("");
+	private final JLabel label_1 = new JLabel("");
 
 	public Partida(int idJ1,int idJ2) 
 	{
 		idJugador1=idJ1;
 		idJugador2=idJ2;
 		this.setTitle("Batalla");
-		this.setLayout(new GridLayout(4,1));
-		this.setSize(500, 300);
+		getContentPane().setLayout(new GridLayout(4,1));
+		this.setSize(650, 400);
 		this.setLocationRelativeTo(null);
 
 		consultaJ1 = "select * from jugadores join pokemons on idPokemonFK = idPokemon where idJugador ="+idJ1+";";
@@ -125,7 +127,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 
 			pnluno.add(pnlVida1);
 			pnluno.add(pnlPkm1);
-			this.add(pnluno);
+			label.setIcon(new ImageIcon("imagenes/"+rsJ1.getString("imagen")));
+			
+			pnlPkm1.add(label);
+			getContentPane().add(pnluno);
 			lblQueHacer.setText(nombreJugador1+", ¿Qué quieres hacer?");
 		} catch(SQLException e) {
 			JOptionPane.showMessageDialog(null,e.getMessage(),"Error 1 ", JOptionPane.ERROR_MESSAGE);
@@ -146,7 +151,10 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 			pnlVida2.add(PBvida2);
 			pnldos.add(pnlVida2);
 			pnldos.add(pnlPkm2);
-			this.add(pnldos);
+			label_1.setIcon(new ImageIcon("imagenes/"+rsJ2.getString("imagen")));
+			
+			pnlPkm2.add(label_1);
+			getContentPane().add(pnldos);
 
 			pnlMovimientos.setVisible(false);
 			pnlMovimientos.setLayout(new FlowLayout());
@@ -236,30 +244,30 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		pnlOpciones.add(btnRendirse);
 		btnRendirse.addActionListener(this);
 		pnltres.add(pnlOpciones);
-		this.add(pnltres);
+		getContentPane().add(pnltres);
 
 		pnlTranscurso.setLayout(new FlowLayout());
 		pnlTranscurso.setBorder(bordejpanel);
 		pnlTranscurso.add(lblQueHacer);
 		pnlcuatro.add(pnlTranscurso);
-		this.add(pnlcuatro);
+		getContentPane().add(pnlcuatro);
 
 
 		dlgRendirse.setSize(200,100);
 		dlgRendirse.setTitle("Rendirse");
-		dlgRendirse.setLayout(new FlowLayout());
-		dlgRendirse.add(lblRendirse);
-		dlgRendirse.add(btnSi);
+		dlgRendirse.getContentPane().setLayout(new FlowLayout());
+		dlgRendirse.getContentPane().add(lblRendirse);
+		dlgRendirse.getContentPane().add(btnSi);
 		btnSi.addActionListener(this);
-		dlgRendirse.add(btnNo);
+		dlgRendirse.getContentPane().add(btnNo);
 		btnNo.addActionListener(this);
 		dlgRendirse.setLocationRelativeTo(null);
 
 		dlgFin.setSize(200,100);
 		dlgFin.setTitle("Fin de Partida");
-		dlgFin.setLayout(new FlowLayout());
+		dlgFin.getContentPane().setLayout(new FlowLayout());
 		dlgFin.setLocationRelativeTo(null);
-		dlgFin.add(lblFin);
+		dlgFin.getContentPane().add(lblFin);
 
 		this.addWindowListener(this);
 		this.setVisible(true);
@@ -557,15 +565,19 @@ public class Partida extends JFrame implements WindowListener, ActionListener
 		if(PBvida1.getValue()<=0) 
 		{
 				lblFin.setText(nombreJugador2+" Gana en "+turno/2+" turnos.");
+				bd.ejecutarIDA("INSERT INTO puntuaciones VALUES (null, "+turno/2+","+idJugador2+")", bd.conectar("juegoPokemon","root", "Studium2018;"));
 				bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
 				dlgFin.setVisible(true);
 				this.setVisible(false);
+				new MenuPrincipal();
 
 		} else if ( PBvida2.getValue()<=0) {
 				lblFin.setText(nombreJugador1+" Gana en "+turno/2+" turnos.");
+				bd.ejecutarIDA("INSERT INTO puntuaciones VALUES (null, "+turno/2+","+idJugador1+")", bd.conectar("juegoPokemon","root", "Studium2018;"));
 				bd.desconectar(bd.conectar("juegoPokemon","root", "Studium2018;"));
 				dlgFin.setVisible(true);
 				this.setVisible(false);
+				new MenuPrincipal();
 		}
 
 	}

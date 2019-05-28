@@ -1,78 +1,86 @@
 package es.studium.Juego;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class Top10 extends JFrame implements WindowListener, ActionListener
 {
-	JLabel lblPartidas = new JLabel("Mejores Batallas");
-	List lista = new List(5,true);
-	JPanel pnluno = new JPanel();
-	JPanel pnldos = new JPanel();
-	JPanel pnltres = new JPanel();
+	private static final long serialVersionUID = 1L;
+	JPanel pnlPrimero = new JPanel();
+	BaseDatos bd = new BaseDatos();
+	
+	JLabel lblPartidas = new JLabel("Mejores Jugadores");
+	
+	DefaultTableModel modelo = new DefaultTableModel();
+	JTable tablaJugadores = new JTable(modelo);
+	
 	JButton btnOk = new JButton("Ok");
 	
-	
-	String Partida1 = "Pepito";
-	String Partida2 = "Pepito";
-	String Partida3 = "Pepito";
-	String Partida4 = "Pepito";
-	String Partida5 = "Pepito";
-	String Partida6 = "Pepito";
-	String Partida7 = "Pepito";
-	String Partida8 = "Pepito";
-	String Partida9 = "Pepito";
-	String Partida10 = "Pepito";
-	
+	JPanel pnlBtn = new JPanel();
 	
 	
 	public Top10()
 	{
 
 		this.setTitle("Top 10");
-		setLocationRelativeTo(null);
-		this.setSize(300,300);
-		setLayout(new GridLayout(3,1));
-		pnluno.add(lblPartidas);
-		this.add(pnluno);
-		lista.add(Partida1);
-		lista.add(Partida2);
-		lista.add(Partida3);
-		lista.add(Partida4);
-		lista.add(Partida5);
-		lista.add(Partida6);
-		lista.add(Partida7);
-		lista.add(Partida8);
-		lista.add(Partida9);
-		lista.add(Partida10);
+		this.setLocationRelativeTo(null);
+		this.setSize(549,354);
+		this.setLayout(new GridLayout(3,1));
+		pnlBtn.setLayout(new FlowLayout());
+		modelo.addColumn("Nombre Jugador");
+		modelo.addColumn("Puntuación");
+		pnlPrimero.setLayout(new FlowLayout());
 		
-		pnldos.add(lista);
-		this.add(pnldos);
-		pnltres.add(btnOk);
-		this.add(pnltres);
+		ResultSet rs = bd.ejecutarSelect("SELECT nombreJugador, puntuacion FROM jugadores JOIN puntuaciones WHERE idJugador = idJugadorFK ORDER BY puntuacion ASC;", bd.conectar("juegoPokemon","root", "Studium2018;"));		
+		try {
+			while (rs.next())
+			{
+
+			   Object [] fila = new Object[2];
+
+			   for (int i=0;i<2;i++) {
+			    	 fila[i] = rs.getObject(i+1);
+			   }
+			   modelo.addRow(fila); 
+			}
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
+		}
+		bd.desconectar(bd.conectar("juegoPokemon","root" ,"Studium2018;"));
+		
+		this.add(pnlPrimero);
+		pnlPrimero.add(lblPartidas);
+		
+		this.add(new JScrollPane(tablaJugadores),BorderLayout.CENTER);
+		pnlBtn.add(btnOk);
+		this.add(pnlBtn,BorderLayout.SOUTH);
 		btnOk.addActionListener(this);
-		
-		
-		
 		this.addWindowListener(this);
 		this.setVisible(true);
 		
 		
 	}
 
-	private static final long serialVersionUID = 1L;
+	
 
 	@Override
 	public void windowActivated(WindowEvent arg0) {

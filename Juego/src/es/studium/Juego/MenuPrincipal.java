@@ -1,6 +1,5 @@
 package es.studium.Juego;
 
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -8,6 +7,10 @@ import java.awt.event.WindowListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import javax.swing.JLabel;
+import javax.swing.ImageIcon;
 public class MenuPrincipal extends JFrame implements WindowListener, ActionListener {
 	
 	private static final long serialVersionUID = 1L;
@@ -17,27 +20,32 @@ public class MenuPrincipal extends JFrame implements WindowListener, ActionListe
 	
 	JPanel pnlImagen = new JPanel();
 	JPanel pnluno = new JPanel();
-	JPanel pnldos = new JPanel();
-	JPanel pnltres = new JPanel();
+	JLabel lblImg = new JLabel("");
 	
 	
 	public MenuPrincipal() 
 	{
 		this.setTitle("Combate Pokemon!");
 		setLocationRelativeTo(null);
-		this.setSize(300,250);
-		setLayout(new GridLayout(4,1));
-		this.add(pnlImagen);
+		this.setSize(600,350);
+		this.setLayout(new GridBagLayout());
+		GridBagConstraints gbcPnlImagen = new GridBagConstraints();
+		gbcPnlImagen.fill = GridBagConstraints.BOTH;
+		gbcPnlImagen.gridy = 0;
+		this.add(pnlImagen, gbcPnlImagen);
+		lblImg.setIcon(new ImageIcon("imagenes/pokemon.png"));
 		
+		pnlImagen.add(lblImg);
+		GridBagConstraints gbcPnluno = new GridBagConstraints();
+		gbcPnluno.fill = GridBagConstraints.BOTH;
+		gbcPnluno.gridy = 1;
+		this.add(pnluno, gbcPnluno);
 		pnluno.add(btnIniciar);
-		btnIniciar.addActionListener(this);
-		this.add(pnluno);
-		pnldos.add(btnTop10);
-		btnTop10.addActionListener(this);
-		this.add(pnldos);
-		pnltres.add(btnAyuda);
+		pnluno.add(btnTop10);
+		pnluno.add(btnAyuda);
 		btnAyuda.addActionListener(this);
-		this.add(pnltres);
+		btnTop10.addActionListener(this);
+		btnIniciar.addActionListener(this);
 		
 		this.setVisible(true);
 		addWindowListener(this);
