@@ -2,7 +2,6 @@ package es.studium.Juego;
 
 import java.awt.Choice;
 import java.awt.GridLayout;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.TextEvent;
