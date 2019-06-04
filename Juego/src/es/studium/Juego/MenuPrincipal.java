@@ -67,12 +67,10 @@ public class MenuPrincipal extends JFrame implements WindowListener, ActionListe
 		} else if (btnTop10.equals(ae.getSource())) {
 			
 			new Top10();
-			this.setVisible(false);
 			
 		} else if (btnAyuda.equals(ae.getSource())) {
 			
 			new Ayuda();
-			this.setVisible(false);
 		}
 	}
 
