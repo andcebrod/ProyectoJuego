@@ -59,7 +59,7 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 
 		int idTipo = 0;
 
-		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons where idPokemon ="+idPokemon+";", bd.conectar("juegoPokemon","root", "Studium2018;"));
+		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons where idPokemon ="+idPokemon+";", bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 
 
 		try {
@@ -80,7 +80,7 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 		{
 			JOptionPane.showMessageDialog(null,sqle.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		ResultSet rs2 = bd.ejecutarSelect("SELECT * FROM tipos where idTipo="+idTipo+";",bd.conectar("juegoPokemon","root", "Studium2018;") );		
+		ResultSet rs2 = bd.ejecutarSelect("SELECT * FROM tipos where idTipo="+idTipo+";",bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;") );		
 		try {
 			rs2.next();
 
@@ -95,7 +95,7 @@ public class EstadisticasPokemon extends JFrame implements WindowListener, Actio
 		//CONSULTA DE MOVIMIENTOS 
 		String consultaAtaquesJ1 = "SELECT * FROM lineaMovimientos join movimientos on idMovimiento = idMovimientoFK where idPokemonFK="+idPokemon+";";
 
-		ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaquesJ1, bd.conectar("juegoPokemon","root", "Studium2018;"));
+		ResultSet rsMovimientos = bd.ejecutarSelect(consultaAtaquesJ1, bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 		try {
 
 			int i=0;

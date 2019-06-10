@@ -42,7 +42,7 @@ public class EstadisticaMovimiento extends JFrame implements WindowListener, Act
 		this.setSize(500,300);
 		//Rellenar Estadísticas.
 		ResultSet Mov = bd.ejecutarSelect("select nombreMovimiento, danioMovimiento, nombreTipo from movimientos, tipos where idTipoFK = idTipo and idMovimiento ="+idMovimiento+";", 
-				bd.conectar("juegoPokemon", "root", "Studium2018;"));
+				bd.conectar("juegoPokemon", "usuarioJuego", "Studium2018;"));
 		try {
 		Mov.next();
 		txtNombre.setText(Mov.getString("nombreMovimiento"));
@@ -67,7 +67,7 @@ public class EstadisticaMovimiento extends JFrame implements WindowListener, Act
 		} catch(SQLException e) {
 			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		bd.desconectar(bd.conectar("juegoPokemon", "root", "Studium2018;"));
+		bd.desconectar(bd.conectar("juegoPokemon", "usuarioJuego", "Studium2018;"));
 	}
 
 	@Override

@@ -46,7 +46,7 @@ public class Top10 extends JFrame implements WindowListener, ActionListener
 		modelo.addColumn("Puntuación");
 		pnlPrimero.setLayout(new FlowLayout());
 		
-		ResultSet rs = bd.ejecutarSelect("SELECT nombreJugador, puntuacion FROM jugadores JOIN puntuaciones WHERE idJugador = idJugadorFK ORDER BY puntuacion ASC;", bd.conectar("juegoPokemon","root", "Studium2018;"));		
+		ResultSet rs = bd.ejecutarSelect("SELECT nombreJugador, puntuacion FROM jugadores JOIN puntuaciones WHERE idJugador = idJugadorFK ORDER BY puntuacion ASC;", bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));		
 		try {
 			while (rs.next())
 			{
@@ -61,7 +61,7 @@ public class Top10 extends JFrame implements WindowListener, ActionListener
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		bd.desconectar(bd.conectar("juegoPokemon","root" ,"Studium2018;"));
+		bd.desconectar(bd.conectar("juegoPokemon","usuarioJuego" ,"Studium2018;"));
 		
 		this.add(pnlPrimero);
 		pnlPrimero.add(lblPartidas);

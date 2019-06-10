@@ -43,7 +43,7 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 		this.setLayout(new GridLayout(4,1));
 		
 		//Rellenar choice con Pokemons
-		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons", bd.conectar("juegoPokemon","root", "Studium2018;"));
+		ResultSet rs = bd.ejecutarSelect("SELECT * FROM pokemons", bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 		try {
 			while(rs.next())
 			{
@@ -54,7 +54,7 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
 		}
-		bd.desconectar( bd.conectar("juegoPokemon","root", "Studium2018;"));
+		bd.desconectar( bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 		
 		pnluno.add(lblSeleccionar);
 		this.add(pnluno);
@@ -79,9 +79,9 @@ public class Seleccion1 extends JFrame implements WindowListener, ActionListener
 			int idJugador = 0;
 			String[] array= Pokemons.getSelectedItem().toString().split(".-");
 			int idPokemon = Integer.parseInt(array[0]);
-			bd.ejecutarIDA("INSERT INTO jugadores VALUES (null,'"+jugador1+"',"+idPokemon+");", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			bd.ejecutarIDA("INSERT INTO jugadores VALUES (null,'"+jugador1+"',"+idPokemon+");", bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 			JOptionPane.showMessageDialog(null,"Primer Jugador añadido!","Jugador añadido", JOptionPane.INFORMATION_MESSAGE);
-			ResultSet jugadorCreado = bd.ejecutarSelect("SELECT idJugador FROM jugadores ORDER BY idJugador DESC;", bd.conectar("juegoPokemon","root", "Studium2018;"));
+			ResultSet jugadorCreado = bd.ejecutarSelect("SELECT idJugador FROM jugadores ORDER BY idJugador DESC;", bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 			try {
 				jugadorCreado.next();
 				idJugador = jugadorCreado.getInt("idJugador");
