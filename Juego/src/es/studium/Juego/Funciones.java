@@ -13,7 +13,7 @@ public class Funciones {
 	{
 		
 		String consultaMovimiento = "SELECT * FROM movimientos WHERE idMovimiento ="+idAtaque+";";
-		ResultSet rs = bd.ejecutarSelect(consultaMovimiento, bd.conectar("juegoPokemon","", "Studium2018;"));
+		ResultSet rs = bd.ejecutarSelect(consultaMovimiento, bd.conectar("juegoPokemon","usuarioJuego", "Studium2018;"));
 		
 		int potencia;
 		int danio = 0;
